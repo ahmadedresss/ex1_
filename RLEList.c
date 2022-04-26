@@ -21,6 +21,7 @@ typedef struct RLEList_t {
 
 RLEList RLEListCreate()
 {
+
     RLEList ptr=malloc(sizeof(*ptr));
     if(ptr==NULL)
         return 0;
@@ -84,7 +85,7 @@ int RLEListSize(RLEList list)
         sum+=tmp->appearances;
         tmp=tmp->next_letter;
     }
-     return sum-1;
+    return sum-1;
 }
 
 RLEListResult RLEListRemove(RLEList list, int index)
@@ -194,7 +195,7 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function)
 {
     if(list==NULL)
     {
-       return RLE_LIST_NULL_ARGUMENT;
+        return RLE_LIST_NULL_ARGUMENT;
     }
     RLEList tmp=list;
     while(tmp!=NULL)
