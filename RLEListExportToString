@@ -1,0 +1,23 @@
+char* RLEListExportToString(RLEList list, RLEListResult* result)
+{
+    if(list==NULL)
+    {
+        *result=RLE_LIST_NULL_ARGUMENT;
+        return NULL;
+    }
+    char *arr= malloc(sizeof(char)*(3* RLEListSize(list)));
+
+    RLEList tmp=list;
+    while(tmp!=NULL)
+    {
+        char value=tmp->letter;
+        int occurrences=tmp->appearances;
+        sprintf(arr,"%c%d\n",value,occurrences);
+        tmp=tmp->next_letter;
+    }
+    *result=RLE_LIST_SUCCESS;
+    return arr;
+
+}
+
+
