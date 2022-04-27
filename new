@@ -227,7 +227,7 @@ char RLEListGet(RLEList list, int index,RLEListResult *result)
 
 RLEListResult RLEListMap(RLEList list, MapFunction map_function)
 {
-    if(list==NULL)
+    if(list==NULL||map_function==NULL)
     {
         return RLE_LIST_NULL_ARGUMENT;
     }
@@ -240,24 +240,6 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function)
     return RLE_LIST_SUCCESS;
 }
 
-/*char* RLEListExportToString(RLEList list, RLEListResult* result)
-{
-    if(list==NULL)
-        *result=RLE_LIST_NULL_ARGUMENT;
-    char *arr= malloc(sizeof(char)*(3* RLEListSize(list)));
-    RLEList tmp=list;
-    int index=0;
-    while(tmp!=NULL&& index!=RLEListSize(list) &&  index+1!=RLEListSize(list) && index+2!=RLEListSize(list) )
-    {
-        arr[index] = tmp->letter;
-        arr[index + 1] =(char) tmp->appearances;
-        arr[index + 2] = ROW_DOWN;
-        index++;
-        tmp=tmp->next_letter;
-    }
-    *result=RLE_LIST_SUCCESS;
-    return arr ;
-}*/
 char* RLEListExportToString(RLEList list, RLEListResult* result)
 {
     if(list==NULL)
