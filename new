@@ -32,17 +32,16 @@ RLEList RLEListCreate()
 
 RLEListResult RLEListAppend (RLEList list,char value)
 {
+
     if(list==NULL)
         return RLE_LIST_NULL_ARGUMENT;
 
     RLEList temp= list;
 
-
     while(temp->next_letter!=NULL)
     {
         temp=temp->next_letter;
     }
-
 
     if(temp->letter==value)
     {
@@ -90,6 +89,7 @@ int RLEListSize(RLEList list)
 
 RLEListResult RLEListRemove(RLEList list, int index)
 {
+
     int sum=0;
     if(list==NULL)
     {
@@ -127,15 +127,35 @@ RLEListResult RLEListRemove(RLEList list, int index)
                 free(fwr);
 
             }
-            else if (fwr->next_letter != NULL && fwr != list->next_letter)
-            {
-                while (prev->next_letter != fwr)
-                {
+            else if (fwr->next_letter != NULL && fwr != list->next_letter) {
+                while (prev->next_letter != fwr) {
                     prev = prev->next_letter;
                 }
-                prev->next_letter = fwr->next_letter;
-                fwr->next_letter = NULL;
-                free(fwr);
+                RLEList fwr2 = fwr->next_letter;
+                if (prev->letter == fwr2->letter)
+                {
+                    prev->appearances += fwr2->appearances;
+                    prev->next_letter = fwr2;
+                    fwr->next_letter = NULL;
+                    free(fwr);
+
+                    if (fwr2->next_letter == NULL)
+                    {
+                        prev->next_letter=NULL;
+                        free(fwr2);
+                    } else {
+                        prev->next_letter = fwr2->next_letter;
+                        fwr2->next_letter = NULL;
+                        free(fwr2);
+                    }
+                }
+                else
+                {
+                    prev->next_letter = fwr->next_letter;
+                    fwr->next_letter = NULL;
+                    free(fwr);
+
+                }
 
             }
             else if (index == 0)
