@@ -1,14 +1,9 @@
-//
-// Created by momok on 4/26/2022.
-//
-
-
 #include <stdio.h>
-#include <RLEList.h>
-#include <RLEList.c>
+#include "RLEList.h"
+#include <stdlib.h>
 
-#define MAX_SIZE 256///////////////////////////مش متاكد بس من ها الرقم
 
+#define MAX_SIZE 256
 
 RLEList asciiArtRead(FILE* in_stream)
 {
@@ -16,14 +11,18 @@ RLEList asciiArtRead(FILE* in_stream)
     {
         return NULL;
     }
-    char read_string[MAX_SIZE];
-    RLEList list=RLEListCreate();
-    char *letter=fgets(read_string, MAX_SIZE, in_stream);
 
-    while (letter!=0)
+    char *reader;
+    RLEList list=RLEListCreate();
+    if(fscanf(in_stream, "%s", reader)!=EOF)
     {
-        RLEListAppend(list,*letter);
-        letter=fgets(read_string, MAX_SIZE, in_stream);
+        return NULL;
+    }
+
+    while (*reader)
+    {
+        RLEListAppend(list,*reader);
+        reader++;
     }
     return list;
 }
@@ -36,17 +35,29 @@ RLEListResult asciiArtPrint(RLEList list, FILE *out_stream)
     }
     if(out_stream==NULL)
     {
-         return RLE_LIST_NULL_ARGUMENT;
+        return RLE_LIST_NULL_ARGUMENT;
     }
-
     RLEList tmp=list;
-    while(tmp!=NULL)
+    RLEListResult result;
+    char *arr=malloc(sizeof(*arr)* RLEListSize(tmp)+1);
+    if(arr==NULL)
     {
-        char c =tmp->letter;
-        fputs(&c,out_stream);
-        tmp=tmp->next_letter;
+        return RLE_LIST_NULL_ARGUMENT;
     }
-    return RLE_LIST_SUCCESS;
+    for (int i = 0; i < RLEListSize(tmp)-1; i++)
+    {
+        arr[i]= RLEListGet(list,i,&result);
+    }
+    if(fputs(arr,out_stream)>0)
+    {
+        free(arr);
+        return RLE_LIST_SUCCESS;
+    }
+    else
+    {
+        free(arr);
+        return RLE_LIST_ERROR;
+    }
 }
 
 RLEListResult asciiArtPrintEncoded(RLEList list, FILE *out_stream)
@@ -57,13 +68,16 @@ RLEListResult asciiArtPrintEncoded(RLEList list, FILE *out_stream)
     }
     RLEListResult result=RLE_LIST_NULL_ARGUMENT;
     char *arr=RLEListExportToString(list,&result);
-
-    if(fputs(arr,out_stream)<0)
+    if(arr==NULL)
+        return RLE_LIST_NULL_ARGUMENT;
+    if(fputs(arr,out_stream)!=EOF)
+    {
+        free(arr);
         return RLE_LIST_ERROR;
+    }
     else
+    {
+        free(arr);
         return RLE_LIST_SUCCESS;
-
-
+    }
 }
-
-
