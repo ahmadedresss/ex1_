@@ -1,0 +1,101 @@
+#include "AsciiArtTool.h"
+#include "RLEList.h"
+
+#include <stdio.h>
+#include "main.h"
+#include "string.h"
+
+#define ENCODED "-e"
+#define INVERTED "-i"
+#define FLAG 1
+#define SOURCE 2
+#define TARGET 3
+
+char invert(char letter);
+
+int main(int argc,char **argv)
+{
+   /* if(argc!=4)
+    {
+        return 0;
+    }*/
+    FILE *in_stream=fopen(argv[SOURCE],"r");
+    if(in_stream==NULL)
+    {
+        return 0;
+    }
+    FILE *out_stream=fopen(argv[TARGET],"w");
+    if(out_stream==NULL)
+    {
+        ///
+        return 0;
+    }
+
+    RLEList list=asciiArtRead(in_stream);
+    if(list==NULL)
+    {
+        //
+        //
+        return 0;
+    }
+
+    if(strcmp(argv[FLAG],ENCODED)==0)
+    {
+        if(asciiArtPrintEncoded(list,out_stream)== RLE_LIST_SUCCESS)
+        {
+            fclose(in_stream);
+            fclose(out_stream);
+            RLEListDestroy(list);
+            return 0;
+        }
+        else
+        {
+            fclose(in_stream);
+            fclose(out_stream);
+            RLEListDestroy(list);
+            return 0;
+        }
+    }
+
+    if(strcmp(argv[FLAG],INVERTED)==0)
+    {
+        if (RLEListMap(list, invert) == RLE_LIST_SUCCESS)
+        {
+            if(asciiArtPrint(list,out_stream)== RLE_LIST_SUCCESS)
+            {
+                fclose(out_stream);
+                fclose(in_stream);
+                RLEListDestroy(list);
+                return 0;
+            }
+            else
+            {
+                fclose(in_stream);
+                fclose(out_stream);
+                RLEListDestroy(list);
+                return 0;
+            }
+        }
+        else
+        {
+            fclose(out_stream);
+            fclose(in_stream);
+            RLEListDestroy(list);
+            return 0;
+        }
+    }
+
+
+}
+
+char invert(char letter)
+{
+    if (letter=='@')
+    {
+        return ' ';
+    }
+    if (letter==' ')
+    {
+        return '@';
+    }
+}
