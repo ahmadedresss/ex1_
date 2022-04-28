@@ -73,8 +73,13 @@ void RLEListDestroy(RLEList list)
         toDelete->next_letter=NULL;
         free(toDelete);
     }
-    free(list);
 
+   /* if(nodesCounter(list)==1)
+    {
+        list->next_letter=NULL;
+        free(list);
+    }
+*/
 }
 
 int RLEListSize(RLEList list)
@@ -292,6 +297,14 @@ char* RLEListExportToString(RLEList list, RLEListResult* result)
     int arrSize=(digits)+(2*nodes);
 
     char *arr= malloc(sizeof(char)*arrSize+1);
+    if(arr==NULL)
+    {
+        return 0;
+    }
+    for(int i=0;i<arrSize+1;i++)
+    {
+        arr[i]=0;
+    }
     unsigned int i;
     RLEList tmp=list->next_letter;
     while(tmp!=NULL)
