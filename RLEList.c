@@ -266,3 +266,4 @@ char* RLEListExportToString(RLEList list, RLEListResult* result)
     return arr;
 
 }
+ 
