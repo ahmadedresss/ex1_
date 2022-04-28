@@ -237,16 +237,20 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function)
         tmp->letter=map_function(tmp->letter);
         tmp=tmp->next_letter;
     }
-      return RLE_LIST_SUCCESS;
+    return RLE_LIST_SUCCESS;
 }
 
 char* RLEListExportToString(RLEList list, RLEListResult* result)
 {
     if(list==NULL)
     {
-        *result=RLE_LIST_NULL_ARGUMENT;
-        return NULL;
+        if(result!=NULL)
+        {
+            *result = RLE_LIST_NULL_ARGUMENT;
+            return NULL;
+        }
     }
+
     char *arr= malloc(sizeof(char)*(3* RLEListSize(list)));
     unsigned int i;
     RLEList tmp=list->next_letter;
@@ -262,7 +266,10 @@ char* RLEListExportToString(RLEList list, RLEListResult* result)
         sprintf(&arr[i],"\n");
         tmp=tmp->next_letter;
     }
-    *result=RLE_LIST_SUCCESS;
+    if(result!=NULL)
+    {
+        *result = RLE_LIST_SUCCESS;
+    }
     return arr;
 
 }
