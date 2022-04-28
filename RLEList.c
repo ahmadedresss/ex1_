@@ -285,7 +285,7 @@ char* RLEListExportToString(RLEList list, RLEListResult* result)
             *result=RLE_LIST_SUCCESS;
         }
 
-        str[0]='\n';
+        str[0]='\0';
         return str;
     }
 
