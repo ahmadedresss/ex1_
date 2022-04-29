@@ -214,14 +214,14 @@ char RLEListGet(RLEList list, int index ,RLEListResult *result)
             if(result==NULL)
             {
                 c=temp->letter;
-                free(temp);
+                // free(temp);
                 return c;
             }
             else
             {
                 *result = RLE_LIST_SUCCESS;
                 c=temp->letter;
-                free(temp);
+                // free(temp);
                 return c;
             }
         }
@@ -356,14 +356,6 @@ int countSize(RLEList list)
     free(tmp);
     return counter;
 }
-
-
-
-
-
-
-
-
 
 int nodesCounter(RLEList list)
 {
