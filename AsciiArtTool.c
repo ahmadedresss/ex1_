@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "RLEList.h"
 #include <stdlib.h>
+#include "AsciiArtTool.h"
 
 
 #define MAX_SIZE 256
@@ -12,17 +13,19 @@ RLEList asciiArtRead(FILE* in_stream)
         return NULL;
     }
 
-    char *reader;
+    char reader[MAX_SIZE];
     RLEList list=RLEListCreate();
-    if(fscanf(in_stream, "%s", reader)!=EOF)
+    if(!list)
     {
         return NULL;
     }
-
-    while (*reader)
+    while(fgets(reader,MAX_SIZE,in_stream) != NULL)
     {
-        RLEListAppend(list,*reader);
-        reader++;
+        int i=0;
+        while(reader[i])
+        {
+            RLEListAppend(list,reader[i++]);
+        }
     }
     return list;
 }
@@ -37,28 +40,22 @@ RLEListResult asciiArtPrint(RLEList list, FILE *out_stream)
     {
         return RLE_LIST_NULL_ARGUMENT;
     }
-    RLEList tmp=list;
+    char letter =0;
     RLEListResult result;
-    char *arr=malloc(sizeof(*arr)* RLEListSize(tmp)+1);
-    if(arr==NULL)
+    for (int i = 0; i < RLEListSize(list); i++)
     {
-        return RLE_LIST_NULL_ARGUMENT;
+        letter= RLEListGet(list,i,&result);
+        if(result != RLE_LIST_SUCCESS)
+        {
+            result=RLE_LIST_ERROR;
+            return result;
+        }
+        fputs(&letter,out_stream);
     }
-    for (int i = 0; i < RLEListSize(tmp)-1; i++)
-    {
-        arr[i]= RLEListGet(list,i,&result);
-    }
-    if(fputs(arr,out_stream)>0)
-    {
-        free(arr);
-        return RLE_LIST_SUCCESS;
-    }
-    else
-    {
-        free(arr);
-        return RLE_LIST_ERROR;
-    }
+     return result;
 }
+
+
 
 RLEListResult asciiArtPrintEncoded(RLEList list, FILE *out_stream)
 {
@@ -66,18 +63,14 @@ RLEListResult asciiArtPrintEncoded(RLEList list, FILE *out_stream)
     {
         return RLE_LIST_NULL_ARGUMENT;
     }
-    RLEListResult result=RLE_LIST_NULL_ARGUMENT;
+    RLEListResult result;
     char *arr=RLEListExportToString(list,&result);
     if(arr==NULL)
+    {
         return RLE_LIST_NULL_ARGUMENT;
-    if(fputs(arr,out_stream)!=EOF)
-    {
-        free(arr);
-        return RLE_LIST_ERROR;
     }
-    else
-    {
-        free(arr);
-        return RLE_LIST_SUCCESS;
-    }
+    
+    fprintf(out_stream,arr);
+    free(arr);
+    return RLE_LIST_SUCCESS;
 }
