@@ -29,7 +29,6 @@ RLEList asciiArtRead(FILE* in_stream)
     }
     return list;
 }
-
 RLEListResult asciiArtPrint(RLEList list, FILE *out_stream)
 {
     if(list==NULL)
@@ -52,11 +51,9 @@ RLEListResult asciiArtPrint(RLEList list, FILE *out_stream)
         }
         fputs(&letter,out_stream);
     }
+    
      return result;
 }
-
-
-
 RLEListResult asciiArtPrintEncoded(RLEList list, FILE *out_stream)
 {
     if(list==NULL||out_stream==NULL)
@@ -67,7 +64,7 @@ RLEListResult asciiArtPrintEncoded(RLEList list, FILE *out_stream)
     char *arr=RLEListExportToString(list,&result);
     if(arr==NULL)
     {
-        return RLE_LIST_NULL_ARGUMENT;
+        return RLE_LIST_ERROR;
     }
     
     fprintf(out_stream,arr);
