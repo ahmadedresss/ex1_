@@ -71,19 +71,12 @@ int main(int argc, char **argv)
         if(result!=RLE_LIST_SUCCESS)
         {
             printf("Error\n");
-            fclose(in_stream);
-            fclose(out_stream);
-            return 0;
         }
          result=asciiArtPrint(List,out_stream);
-        //printf("\n");
-        
     }
     else if(strcmp(argv[FLAG],ENCODED)==0)
     {
-         result=asciiArtPrintEncoded(List,out_stream);
-        //printf("\n");
-        
+         result=asciiArtPrintEncoded(List,out_stream);        
     }
     
     
