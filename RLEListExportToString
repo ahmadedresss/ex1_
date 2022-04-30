@@ -1,23 +1,56 @@
-char* RLEListExportToString(RLEList list, RLEListResult* result)
+char *RLEListExportToString(RLEList list, RLEListResult *result)
 {
-    if(list==NULL)
+    if (list == NULL)
     {
-        *result=RLE_LIST_NULL_ARGUMENT;
-        return NULL;
+        if (result != NULL)
+        {
+            *result = RLE_LIST_NULL_ARGUMENT;
+        }
+        char *c=0;
+        return c;
     }
-    char *arr= malloc(sizeof(char)*(3* RLEListSize(list)));
+    int digits = countSize(list);
+    int nodes = nodesCounter(list);
 
-    RLEList tmp=list;
-    while(tmp!=NULL)
+    int strSize = (digits) + (2 * nodes)+1;
+
+    char *str = malloc(sizeof(*str) *strSize);
+    if(str==NULL)
     {
-        char value=tmp->letter;
-        int occurrences=tmp->appearances;
-        sprintf(arr,"%c%d\n",value,occurrences);
-        tmp=tmp->next_letter;
+        char *c=0;
+        return c;
     }
-    *result=RLE_LIST_SUCCESS;
-    return arr;
-
+    for (int i = 0; i < strSize; ++i)
+    {
+        str[i]=0;
+    }
+    if (nodes == 1)
+    {
+        if (result != NULL)
+        {
+            *result = RLE_LIST_SUCCESS;
+        }
+        str[0] = '\0';
+        return str;
+    }
+    unsigned int i;
+    RLEList tmp = list->next_letter;
+    while (tmp != NULL)
+    {
+        char value = tmp->letter;
+        int occurrences = tmp->appearances;
+        i = strlen(str);
+        sprintf(&str[i], "%c", value);
+        i = strlen(str);
+        sprintf(&str[i], "%d", occurrences);
+        i = strlen(str);
+        sprintf(&str[i], "\n");
+        tmp = tmp->next_letter;
+    }
+    if (result != NULL)
+    {
+        *result = RLE_LIST_SUCCESS;
+    }
+    free(tmp);
+    return str;
 }
-
-
