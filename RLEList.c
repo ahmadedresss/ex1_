@@ -77,6 +77,7 @@ void RLEListDestroy(RLEList list)
         toDelete->next_letter=NULL;
         free(toDelete);
     }
+    free(list);
 }
 
 int RLEListSize(RLEList list)
@@ -93,6 +94,7 @@ int RLEListSize(RLEList list)
         sum+=tmp->appearances;
         tmp=tmp->next_letter;
     }
+    free(tmp);
     return sum-1;
 }
 
@@ -201,6 +203,7 @@ char RLEListGet(RLEList list, int index ,RLEListResult *result)
         }
     }
     RLEList temp;
+    char c=0;
     temp=list->next_letter;
     int sum=0;
     while(temp!=NULL)
@@ -210,12 +213,16 @@ char RLEListGet(RLEList list, int index ,RLEListResult *result)
         {
             if(result==NULL)
             {
-                return temp->letter;
+                c=temp->letter;
+                // free(temp);
+                return c;
             }
             else
             {
                 *result = RLE_LIST_SUCCESS;
-                return temp->letter;
+                c=temp->letter;
+                // free(temp);
+                return c;
             }
         }
         else
@@ -256,75 +263,69 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function)
         }
         fwr = fwr->next_letter;
     }
-
+    free(fwr);
     return RLE_LIST_SUCCESS;
+    
 }
+
+
+
+
 
 char *RLEListExportToString(RLEList list, RLEListResult *result)
 {
     if (list == NULL)
     {
-           if (result != NULL)
-           {
-               *result = RLE_LIST_NULL_ARGUMENT;
-           }
-           return NULL;
+        if (result != NULL)
+        {
+            *result = RLE_LIST_NULL_ARGUMENT;
+        }
+        return 0;
     }
-       int digits = countSize(list);
-       int nodes = nodesCounter(list);
-       char *str = malloc(sizeof(*str) *((2*nodes) + digits + 1));
-    if(str!=NULL)
-    {
-       if (nodes == 1)
-       {
-           if (result != NULL)
-           {
-               *result = RLE_LIST_SUCCESS;
-           }
-           str[0] = '\0';
-           return str;
-       }
-       else
-       {
-       int strSize = (digits) + (2 * nodes);
-       for (int i = 0; i < strSize + 1; i++)
-       {
-           str[i] = 0;
-       }
-       unsigned int i;
-       RLEList tmp = list->next_letter;
-       while (tmp != NULL)
-       {
-           char value = tmp->letter;
-           int occurrences = tmp->appearances;
-           i = strlen(str);
-           sprintf(&str[i], "%c", value);
-           i = strlen(str);
-           sprintf(&str[i], "%d", occurrences);
-           i = strlen(str);
-           sprintf(&str[i], "\n");
-           tmp = tmp->next_letter;
-       }
-       if (result != NULL)
-       {
-           *result = RLE_LIST_SUCCESS;
-       }
-       return str;
-       }
-    }
-    else
+    int digits = countSize(list);
+    int nodes = nodesCounter(list);
+
+    int strSize = (digits) + (2 * nodes)+1;
+
+    char *str = malloc(sizeof(*str) *strSize);
+    if(str==NULL)
     {
         return 0;
     }
+    for (int i = 0; i < strSize; ++i)
+    {
+        str[i]=0;
+    }
+    if (nodes == 1)
+    {
+        if (result != NULL)
+        {
+            *result = RLE_LIST_SUCCESS;
+        }
+        str[0] = '\0';
+        return str;
+    }
+    unsigned int i;
+    RLEList tmp = list->next_letter;
+    while (tmp != NULL)
+    {
+        char value = tmp->letter;
+        int occurrences = tmp->appearances;
+        i = strlen(str);
+        sprintf(&str[i], "%c", value);
+        i = strlen(str);
+        sprintf(&str[i], "%d", occurrences);
+        i = strlen(str);
+        sprintf(&str[i], "\n");
+        tmp = tmp->next_letter;
+    }
+    if (result != NULL)
+    {
+        *result = RLE_LIST_SUCCESS;
+    }
+    free(tmp);
+    return str;
 }
-
-
-
-
-
-
-
-
 
 
 int countSize(RLEList list)
@@ -345,16 +346,9 @@ int countSize(RLEList list)
         }
         tmp = tmp->next_letter;
     }
+    free(tmp);
     return counter;
 }
-
-
-
-
-
-
-
-
 
 int nodesCounter(RLEList list)
 {
@@ -365,5 +359,5 @@ int nodesCounter(RLEList list)
         counter++;
         tmp=tmp->next_letter;
     }
-    return counter;
+    return counter-1;
 }
