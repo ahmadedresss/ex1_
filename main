@@ -21,7 +21,7 @@ char invert(char value)
     {
         return SPACE;
     }
-    if(value==SPACE)
+    else if(value==SPACE)
     {
         return AT_SIGN;
     }
@@ -72,17 +72,17 @@ int main(int argc, char **argv)
         {
             printf("Error\n");
         }
-         result=asciiArtPrint(List,out_stream);
+        result=asciiArtPrint(List,out_stream);
     }
     else if(strcmp(argv[FLAG],ENCODED)==0)
     {
-         result=asciiArtPrintEncoded(List,out_stream);        
+        result=asciiArtPrintEncoded(List,out_stream);
     }
-    
-    
+
+
     RLEListDestroy(List);
     fclose(in_stream);
     fclose(out_stream);
-    
+
     return 0;
 }
