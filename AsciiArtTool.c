@@ -49,10 +49,10 @@ RLEListResult asciiArtPrint(RLEList list, FILE *out_stream)
             result=RLE_LIST_ERROR;
             return result;
         }
-        fputs(&letter,out_stream);
+        fputc(letter,out_stream);
     }
-    
-     return result;
+
+    return result;
 }
 RLEListResult asciiArtPrintEncoded(RLEList list, FILE *out_stream)
 {
@@ -66,7 +66,7 @@ RLEListResult asciiArtPrintEncoded(RLEList list, FILE *out_stream)
     {
         return RLE_LIST_ERROR;
     }
-    
+
     fprintf(out_stream,arr);
     free(arr);
     return RLE_LIST_SUCCESS;
