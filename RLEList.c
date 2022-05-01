@@ -265,12 +265,7 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function)
     }
     free(fwr);
     return RLE_LIST_SUCCESS;
-    
 }
-
-
-
-
 
 char *RLEListExportToString(RLEList list, RLEListResult *result)
 {
@@ -280,52 +275,64 @@ char *RLEListExportToString(RLEList list, RLEListResult *result)
         {
             *result = RLE_LIST_NULL_ARGUMENT;
         }
-        return 0;
+        return NULL;
     }
     int digits = countSize(list);
     int nodes = nodesCounter(list);
-
-    int strSize = (digits) + (2 * nodes)+1;
-
-    char *str = malloc(sizeof(*str) *strSize);
-    if(str==NULL)
+    char *str = malloc(sizeof(*str) *((2*nodes) + digits + 1));
+    if(str!=NULL)
+    {
+        if (nodes == 1)
+        {
+            if (result != NULL)
+            {
+                *result = RLE_LIST_SUCCESS;
+            }
+            str[0] = '\0';
+            return str;
+        }
+        else
+        {
+            int strSize = (digits) + (2 * nodes);
+            for (int i = 0; i < strSize + 1; i++)
+            {
+                str[i] = 0;
+            }
+            unsigned int i;
+            RLEList tmp = list->next_letter;
+            while (tmp != NULL)
+            {
+                char value = tmp->letter;
+                int occurrences = tmp->appearances;
+                i = strlen(str);
+                sprintf(&str[i], "%c", value);
+                i = strlen(str);
+                sprintf(&str[i], "%d", occurrences);
+                i = strlen(str);
+                sprintf(&str[i], "\n");
+                tmp = tmp->next_letter;
+            }
+            if (result != NULL)
+            {
+                *result = RLE_LIST_SUCCESS;
+            }
+            free(tmp);
+            return str;
+        }
+    }
+    else
     {
         return 0;
     }
-    for (int i = 0; i < strSize; ++i)
-    {
-        str[i]=0;
-    }
-    if (nodes == 1)
-    {
-        if (result != NULL)
-        {
-            *result = RLE_LIST_SUCCESS;
-        }
-        str[0] = '\0';
-        return str;
-    }
-    unsigned int i;
-    RLEList tmp = list->next_letter;
-    while (tmp != NULL)
-    {
-        char value = tmp->letter;
-        int occurrences = tmp->appearances;
-        i = strlen(str);
-        sprintf(&str[i], "%c", value);
-        i = strlen(str);
-        sprintf(&str[i], "%d", occurrences);
-        i = strlen(str);
-        sprintf(&str[i], "\n");
-        tmp = tmp->next_letter;
-    }
-    if (result != NULL)
-    {
-        *result = RLE_LIST_SUCCESS;
-    }
-    free(tmp);
-    return str;
 }
+
+
+
+
+
+
+
+
 
 
 int countSize(RLEList list)
@@ -359,5 +366,6 @@ int nodesCounter(RLEList list)
         counter++;
         tmp=tmp->next_letter;
     }
-    return counter-1;
+    free(tmp);
+    return counter;
 }
