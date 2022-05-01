@@ -11,7 +11,7 @@ char* out = malloc(sizeof(*out)*((LEN * times) + 1));
 assert(out);
 char* ptr=out;
 strcpy(ptr,s);
- for(int i=1; i<times; i++)
+ for(int i=0; i<times; i++)
  {
     ptr=ptr+len;
      strcpy(ptr,s);
